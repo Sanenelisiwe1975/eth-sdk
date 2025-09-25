@@ -115,6 +115,46 @@ class MyEthereumSDK {
     const contract = new ethers.Contract(contractAddress, abi, this.provider);
     contract.on(eventName, callback);
   }
+
+  // --- Testing Utilities ---
+  // Mock provider for testing
+  static getMockProvider() {
+    return new ethers.JsonRpcProvider();
+  }
+
+  // Helper to mock wallet for testing
+  static getMockWallet() {
+    return ethers.Wallet.createRandom();
+  }
+
+  // --- Performance Optimization ---
+  // Batch multiple RPC calls
+  async batchRequests(requests) {
+    // requests: array of { method, params }
+    const batch = requests.map(({ method, params }) => ({ method, params }));
+    // ethers.js does not natively support batch, so use Promise.all
+    return await Promise.all(batch.map(r => this.provider[r.method](...r.params)));
+  }
+
+  // Simple in-memory cache for getBalance
+  #balanceCache = {};
+  async getBalanceCached(address) {
+    if (this.#balanceCache[address]) {
+      return this.#balanceCache[address];
+    }
+    const balance = await this.getBalance(address);
+    this.#balanceCache[address] = balance;
+    return balance;
+  }
+
+  // --- Compatibility ---
+  static isBrowser() {
+    return (typeof window !== "undefined" && typeof window.document !== "undefined");
+  }
+
+  static isNode() {
+    return (typeof process !== "undefined" && process.versions != null && process.versions.node != null);
+  }
 }
 
 module.exports = MyEthereumSDK;
