@@ -155,6 +155,45 @@ class MyEthereumSDK {
   static isNode() {
     return (typeof process !== "undefined" && process.versions != null && process.versions.node != null);
   }
+
+  // --- Network Support ---
+  setNetwork(rpcUrl) {
+    this.provider = new ethers.JsonRpcProvider(rpcUrl);
+  }
+
+  getNetwork() {
+    return this.provider.getNetwork();
+  }
+
+  // --- ENS Integration ---
+  async resolveENS(name) {
+    try {
+      return await this.provider.resolveName(name);
+    } catch (error) {
+      return { error: error.message };
+    }
+  }
+
+  async lookupAddress(address) {
+    try {
+      return await this.provider.lookupAddress(address);
+    } catch (error) {
+      return { error: error.message };
+    }
+  }
+
+  // --- Enhanced Event Subscription ---
+  onNewTransaction(callback) {
+    this.provider.on('pending', callback);
+  }
+
+  onContractAllEvents(contractAddress, abi, callback) {
+    const contract = new ethers.Contract(contractAddress, abi, this.provider);
+    contract.on('*', callback);
+  }
+
+  // --- TypeScript Support ---
+  // Type definitions should be provided in a separate .d.ts file for full TypeScript support.
 }
 
 module.exports = MyEthereumSDK;
