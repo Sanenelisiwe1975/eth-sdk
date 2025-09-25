@@ -60,20 +60,44 @@ class MyEthereumSDK {
     };
   }
 
+  // Securely store a private key in memory (simple demo, not for production)
+  #secureKey = null;
+  setSecureKey(privateKey) {
+    if (!ethers.isHexString(privateKey) || privateKey.length !== 66) {
+      throw new Error("Invalid private key format");
+    }
+    this.#secureKey = privateKey;
+  }
+  getSecureKey() {
+    if (!this.#secureKey) {
+      throw new Error("No private key stored");
+    }
+    return this.#secureKey;
+  }
+
   // Sign a transaction
   async signTransaction(walletPrivateKey, txData) {
-    const wallet = new ethers.Wallet(walletPrivateKey, this.provider);
-    const txResponse = await wallet.sendTransaction(txData);
-    return txResponse;
+    try {
+      this.validateTransactionData(txData);
+      const wallet = new ethers.Wallet(walletPrivateKey, this.provider);
+      const txResponse = await wallet.sendTransaction(txData);
+      return txResponse;
+    } catch (error) {
+      return { error: error.message };
+    }
   }
 
   // Deploy a smart contract
   async deployContract(walletPrivateKey, abi, bytecode, constructorArgs = []) {
-    const wallet = new ethers.Wallet(walletPrivateKey, this.provider);
-    const factory = new ethers.ContractFactory(abi, bytecode, wallet);
-    const contract = await factory.deploy(...constructorArgs);
-    await contract.deploymentTransaction().wait();
-    return contract;
+    try {
+      const wallet = new ethers.Wallet(walletPrivateKey, this.provider);
+      const factory = new ethers.ContractFactory(abi, bytecode, wallet);
+      const contract = await factory.deploy(...constructorArgs);
+      await contract.deploymentTransaction().wait();
+      return contract;
+    } catch (error) {
+      return { error: error.message };
+    }
   }
 
   // Interact with a smart contract
