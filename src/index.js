@@ -192,8 +192,7 @@ class MyEthereumSDK {
     contract.on('*', callback);
   }
 
-  // --- TypeScript Support ---
-  // Type definitions should be provided in a separate .d.ts file for full TypeScript support.
+  
 }
 
 module.exports = MyEthereumSDK;
