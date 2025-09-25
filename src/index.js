@@ -1,5 +1,7 @@
 const { ethers } = require("ethers");
 const { formatEther } = ethers;
+const { isValidAddress, formatWeiToEth, getTransaction } = require('./utils');
+
 
 class MyEthereumSDK {
   constructor(rpcUrl) {
