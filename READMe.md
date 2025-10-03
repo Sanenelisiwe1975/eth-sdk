@@ -1,25 +1,18 @@
-# MyEthereumSDK
+# eth-sdk
 
-A simple JavaScript SDK for interacting with Ethereum nodes via RPC.
+This project contains the eth-sdk.
 
-## Installation
+## Structure
+- src/: SDK source code
+- node_modules/: Dependencies
 
+## Tools Used
+- Node.js & npm
+
+## Install & Run
 ```bash
-npm install eth-sdk
+npm install
 ```
 
-## Usage
-
-```javascript
-const MyEthereumSDK = require('eth-sdk');
-const sdk = new MyEthereumSDK('https://rpc.ethereum.org');
-
-// Example: Get current block number
-sdk.getBlockNumber().then(blockNumber => {
-  console.log('Current block number:', blockNumber);
-});
-```
-
-## License
-
-MIT License.
+---
+Update this README as the project evolves.
